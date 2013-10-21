@@ -116,17 +116,19 @@ public class DBAdmin : MonoBehaviour {
 					}
 				}
 				
-				//GUILayout.Label(entry.Value.encoding.ToString());
+				GUILayout.Label(entry.Value.encoding.ToString());
 				
 				// Toolbar
 				if(entry.Value.encoding == Encoding.Bitstream && GUILayout.Button("Edit")) {
 					editKey = entry.Key;
 					editValue = entry.Value;
 				}
-				
-				if(GUILayout.Button("Remove")) {
-					deleteKey = entry.Key;
-				}
+			} else {
+				GUILayout.FlexibleSpace();
+			}
+			
+			if(GUILayout.Button("Remove")) {
+				deleteKey = entry.Key;
 			}
 			
 			GUILayout.EndHorizontal();

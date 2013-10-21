@@ -217,16 +217,9 @@ Below you can see the list of buckets and keys in the database. Please refer to 
 		GUILayout.BeginVertical();
 
 		DrawDataList();
-		
-		if(!_enableRefresh)
-			GUI.backgroundColor = Color.yellow;
-		else
-			GUI.backgroundColor = Color.green;
-		
+
 		if (GUILayout.Button("Refresh")) StartCoroutine(RefreshList());
-		
-		GUI.backgroundColor = Color.white;
-		
+
 		GUILayout.EndVertical();
 	}
 
