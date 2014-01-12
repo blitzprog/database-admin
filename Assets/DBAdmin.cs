@@ -41,15 +41,17 @@ public class DBAdmin : MonoBehaviour {
 		// Refresh the list once on start.
 		StartCoroutine(RefreshList());
 	}
-	
+	Vector2 bucketsScrollPosition;
 	void OnGUI() {
 		if(GUI.skin.font != font) {
 			GUI.skin.font = font;
 		}
 		
 		// Left column
-		GUILayout.BeginArea(new Rect(0, 0, Screen.width * 0.2f, Screen.height));
+		GUILayout.BeginArea(new Rect(0, 0, Screen.width * 0.25f, Screen.height));
 		GUILayout.BeginVertical("box");
+		
+		bucketsScrollPosition = GUILayout.BeginScrollView(bucketsScrollPosition);
 		foreach(var bucket in _buckets) {
 			GUILayout.BeginHorizontal();
 			
@@ -67,6 +69,7 @@ public class DBAdmin : MonoBehaviour {
 		GUI.contentColor = Color.white;
 		
 		GUILayout.FlexibleSpace();
+		GUILayout.EndScrollView();
 		
 		// Footer
 		GUILayout.BeginHorizontal();
@@ -90,7 +93,7 @@ public class DBAdmin : MonoBehaviour {
 		GUILayout.EndArea();
 		
 		// Right column
-		GUILayout.BeginArea(new Rect(Screen.width * 0.2f, 0, Screen.width * 0.8f, Screen.height));
+		GUILayout.BeginArea(new Rect(Screen.width * 0.25f, 0, Screen.width * 0.75f, Screen.height));
 		GUILayout.BeginVertical("box");
 		
 		keysScrollPosition = GUILayout.BeginScrollView(keysScrollPosition);
