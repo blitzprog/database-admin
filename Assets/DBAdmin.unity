@@ -108,7 +108,7 @@ MonoBehaviour:
   RiakNodes:
   - HostName: 37.139.29.70
     RiakPbcPort: 8087
-    UniqueId: riak
+    UniqueId: erza
     SocketPoolSize: 10
 --- !u!114 &1845503610
 MonoBehaviour:

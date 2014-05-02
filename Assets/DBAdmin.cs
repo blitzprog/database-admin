@@ -246,23 +246,23 @@ public class DBAdmin : MonoBehaviour {
 		
 		// Get the value for the key
 		switch(val.encoding) {
-		case Encoding.Bitstream:
-			var setBSReq = bucket.Set(key, val.text, Encoding.Bitstream);
-			yield return setBSReq.WaitUntilDone();
-			success = setBSReq.isSuccessful;
-			break;
-			
-		case Encoding.Json:
-			var reader = new JsonReader(val.text);
-			reader.ReadObjectStart();
-			reader.ReadPropertyName("v");
-			var valJson = reader.ReadString();
-			reader.ReadObjectEnd();
-			
-			var setJSONReq = bucket.Set(key, valJson, Encoding.Json);
-			yield return setJSONReq.WaitUntilDone();
-			success = setJSONReq.isSuccessful;
-			break;
+			case Encoding.Bitstream:
+				var setBSReq = bucket.Set(key, val.text, Encoding.Bitstream);
+				yield return setBSReq.WaitUntilDone();
+				success = setBSReq.isSuccessful;
+				break;
+				
+			case Encoding.Json:
+				var reader = new JsonReader(val.text);
+				reader.ReadObjectStart();
+				reader.ReadPropertyName("v");
+				var valJson = reader.ReadString();
+				reader.ReadObjectEnd();
+				
+				var setJSONReq = bucket.Set(key, valJson, Encoding.Json);
+				yield return setJSONReq.WaitUntilDone();
+				success = setJSONReq.isSuccessful;
+				break;
 		}
 		
 		if(success) {
@@ -336,7 +336,8 @@ public class DBAdmin : MonoBehaviour {
 			Debug.LogError("Unable to remove '" + removeRequest.key + "' from " + removeRequest.bucket + ". " + removeRequest.GetErrorString());
 		} 
 	}
-	
+
+	// ClearBucket
 	IEnumerator ClearBucket(Bucket bucket) {
 		// Get all keys in the given bucket.
 		var getKeysRequest = bucket.GetKeys();
@@ -363,7 +364,8 @@ public class DBAdmin : MonoBehaviour {
 		// Finally refresh the list.
 		StartCoroutine(RefreshList());
 	}
-		
+
+	// RefreshList
 	IEnumerator RefreshList() {
 		// Only allow a new refresh if the previous one has finished.
 		if (!_enableRefresh) yield break;
@@ -379,7 +381,8 @@ public class DBAdmin : MonoBehaviour {
 		// We are done, a new refresh can be started.
 		_enableRefresh = true;
 	}
-	
+
+	// RefreshBuckets
 	IEnumerator RefreshBuckets() {
 		// Build a separate bucket list until the operation finishes.
 		var newBuckets = new List<Bucket>();
