@@ -29,8 +29,10 @@ public class DBAdmin : MonoBehaviour {
 	private string editKey = "";
 	private DBValue editValue = null;
 	private Bucket clearBucket = null;
+
+	private Vector2 bucketsScrollPosition;
 	
-	// Use this for initialization
+	// Start
 	void Start () {
 		// Reduce CPU usage
 		Application.targetFrameRate = 25;
@@ -41,7 +43,8 @@ public class DBAdmin : MonoBehaviour {
 		// Refresh the list once on start.
 		StartCoroutine(RefreshList());
 	}
-	Vector2 bucketsScrollPosition;
+
+	// OnGUI
 	void OnGUI() {
 		if(GUI.skin.font != font) {
 			GUI.skin.font = font;
@@ -152,7 +155,8 @@ public class DBAdmin : MonoBehaviour {
 			GUILayout.Window(0, new Rect(Screen.width / 2 - Screen.width / 4, Screen.height / 2 - 50, Screen.width / 2, 100), DeleteBucketWindow, "Are you sure you want to delete '" + clearBucket.name + "'?");
 		}
 	}
-	
+
+	// EditWindow
 	void EditWindow(int id) {
 		//GUILayout.FlexibleSpace();
 		editValue.text = GUILayout.TextArea(editValue.text);
@@ -166,7 +170,8 @@ public class DBAdmin : MonoBehaviour {
 			editValue = null;
 		}
 	}
-	
+
+	// DeleteWindow
 	void DeleteWindow(int id) {
 		GUILayout.FlexibleSpace();
 		if(GUILayout.Button("Yes")) {
@@ -178,7 +183,8 @@ public class DBAdmin : MonoBehaviour {
 		}
 		GUILayout.FlexibleSpace();
 	}
-	
+
+	// DeleteBucketWindow
 	void DeleteBucketWindow(int id) {
 		GUILayout.FlexibleSpace();
 		if(GUILayout.Button("Yes")) {
@@ -192,7 +198,8 @@ public class DBAdmin : MonoBehaviour {
 		}
 		GUILayout.FlexibleSpace();
 	}
-	
+
+	// DrawJsonTreeExpanded
 	void DrawJsonTreeExpanded(JsonTree jsonTree) {
 		if(jsonTree.IsObject) {
 			GUILayout.BeginVertical();
@@ -232,7 +239,8 @@ public class DBAdmin : MonoBehaviour {
 			GUILayout.EndHorizontal();
 		}
 	}
-	
+
+	// SetKeyValue
 	IEnumerator SetKeyValue(Bucket bucket, string key, DBValue val) {
 		bool success = false;
 		
@@ -266,13 +274,16 @@ public class DBAdmin : MonoBehaviour {
 			Debug.LogError("Couldn't update key '" + key + "' to value '" + val.text + "'");
 		}
 	}
-	
+
+	// GetKeysAndValues
 	IEnumerator GetKeysAndValues(Bucket bucket) {
 		var getKeysReq = bucket.GetKeys();
 		yield return getKeysReq.WaitUntilDone();
 		
-		if(!getKeysReq.isSuccessful)
+		if(!getKeysReq.isSuccessful) {
+			Debug.LogError("Error querying keys for " + bucket.name);
 			yield break;
+		}
 		
 		keysScrollPosition = Vector2.zero;
 		data = new Dictionary<string, DBValue>();
@@ -282,13 +293,16 @@ public class DBAdmin : MonoBehaviour {
 		}
 		
 		currentBucket = bucket;
+		Debug.Log("Active bucket: " + bucket.name);
 	}
-	
+
+	// GetKeyValue
 	IEnumerator GetKeyValue(Bucket bucket, string key) {
 		// Get the value for the key
 		var getReq = bucket.Get(key);
 		yield return getReq.WaitUntilDone();
-		if (getReq.isSuccessful) {
+
+		if(getReq.isSuccessful) {
 			// Try to deserialize the data to a string. If this does not work, use the raw data.
 			var encoding = getReq.GetEncoding();
 			if(encoding == Encoding.Json) {
@@ -305,9 +319,12 @@ public class DBAdmin : MonoBehaviour {
 					encoding = encoding
 				};
 			}
+		} else {
+			Debug.LogError("Error querying value for key: " + key);
 		}
 	}
-	
+
+	// Remove
 	IEnumerator Remove(Bucket bucket, string key) {
 		// Remove one entry from the database.
 		var removeRequest = bucket.Remove(key);
